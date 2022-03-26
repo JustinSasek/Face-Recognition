@@ -22,10 +22,11 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 # Load the data
-train_dataset = MNIST('C:\\Users\\conra\\Projects\\ObjectDetection\\data', train=True, download=True,
+data_path= ""
+train_dataset = MNIST(data_path, train=True, download=True,
     transform=transform)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size_train, shuffle=True)
-test_dataset = MNIST('C:\\Users\\conra\\Projects\\ObjectDetection\\data', train=False, download=True,
+test_dataset = MNIST(data_path, train=False, download=True,
     transform=transform)
 test_loader = torch.utils.data.DataLoader(test_dataset,  batch_size=batch_size_test, shuffle=True)
 # %%
