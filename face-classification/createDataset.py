@@ -1,23 +1,24 @@
 from cv2 import VideoCapture, imwrite
 import os
 import keyboard
-
+import time
 
 WORKING_DIR = '.'
 DATASET_NAME = 'eclair-faces'
 FILENAME_WIDTH = 16
+WEBCAM_NUM = 0 # TODO: MAKE SURE THIS IS USING THE RIGHT WEBCAM!!!!!!!! Usually 0 is the default webcam on your computer and 1 any external webcam. 
 
 
 class DatasetCreator:
     STOP_HOTKEY = 'space'  # hotkey to stop recording
 
-    def __init__(self, working_dir='.', dataset_name='eclair-faces', filename_width=16):
+    def __init__(self, webcam_num=0, working_dir='.', dataset_name='eclair-faces', filename_width=16):
         self.root = os.path.join(WORKING_DIR, DATASET_NAME)
         self.img = os.path.join(self.root, 'img')
         self.idFile = os.path.join(self.root, 'id.txt')
         self.sizeFile = os.path.join(self.root, 'size.txt')
-        self.cam = VideoCapture(0)  # TODO: FIND UR WEBCAM !!!!! !  !! !
-
+        self.cam = VideoCapture(webcam_num)  
+        # Create directory with image, id, and size files
         self.createDirs()
         with open(self.sizeFile, 'r') as f:
             self.size = int(f.read().strip())
@@ -64,18 +65,27 @@ class DatasetCreator:
         self.mkfile(self.sizeFile, init='0')  # initialize file with 0 if it does not exist
 
     def captureData(self, imgId):
+        # Create path to store image
         newImgPath = os.path.join(self.img, f'{str(self.size).zfill(FILENAME_WIDTH)}.png')
+        
+        # Capture webcam
         result, image = self.cam.read()
+        if result:
+            # Save image
+            imwrite(str(newImgPath), image)
+            os.chmod(newImgPath, 0o777)
+            
+            # Write the image id to the id file
+            with open(self.idFile, 'a') as f:
+                f.write(f'{str(self.size).zfill(FILENAME_WIDTH)}.png {imgId}')
+                f.write('\n')
 
-        imwrite(str(newImgPath), image)
-        os.chmod(newImgPath, 0o777)
-        with open(self.idFile, 'a') as f:
-            f.write(f'{str(self.size).zfill(FILENAME_WIDTH)}.png {imgId}')
-            f.write('\n')
-
-        self.size += 1
-        with open(self.sizeFile, 'w') as f:
-            f.write(str(self.size))
+            # Update the size file
+            self.size += 1
+            with open(self.sizeFile, 'w') as f:
+                f.write(str(self.size))
+        else:
+            print('Error: Could not capture image')
 
     def manualLoop(self):
         """
@@ -105,10 +115,10 @@ class DatasetCreator:
                 if keyboard.is_pressed(self.STOP_HOTKEY):
                     print(f'Stopped at {str(self.size-1).zfill(FILENAME_WIDTH)}.png')
                     break
-
+                # Capture webcam image
                 self.captureData(imgId)
-
+                time.sleep(0.5)
 
 if __name__ == "__main__":
-    creator = DatasetCreator(WORKING_DIR, DATASET_NAME, FILENAME_WIDTH)
-    # creator.hotkeyLoop()
+    creator = DatasetCreator(WEBCAM_NUM, WORKING_DIR, DATASET_NAME, FILENAME_WIDTH)
+    creator.hotkeyLoop()

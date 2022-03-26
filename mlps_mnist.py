@@ -22,6 +22,7 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 # Load the data
+data_path = "PUT YOUR OWN PATH"
 train_dataset = MNIST('C:\\Users\\conra\\Projects\\ObjectDetection\\data', train=True, download=True,
     transform=transform)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size_train, shuffle=True)
@@ -55,7 +56,8 @@ class Net(nn.Module):
 network = Net()
 loss_func = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(network.parameters(), lr=learning_rate,
-                      momentum=momentum)
+                      momentum=momentum)    /'
+                      '
 # %%
 # Train Loop
 def train(num_epochs, network, train_loader):
