@@ -23,14 +23,27 @@ class DatasetCreator:
             self.size = int(f.read().strip())
 
     def mkdir(self, path):
+        """
+        Makes a directory at the specified path if it doesn't exist.
+
+        Args:
+            - path(str): the path to the directory to be created
+        """
         try:
             os.mkdir(path)
             print(f'Created {path}')
         except OSError:
             print(f'{path} already exists...')
+        # Give read, write, execute permissions
         os.chmod(path, 0o777)
 
-    def mkfile(self, path, init=None):  # init is what to initialize file with
+    def mkfile(self, path, init=None):
+        """
+        Creates a file at a specfied path if it doesn't exist.
+        
+        Args:
+            -
+        """
         try:
             with open(path, 'x') as f:
                 if init is not None:
@@ -38,9 +51,13 @@ class DatasetCreator:
                 print(f'Created {path}')
         except FileExistsError:
             print(f'{path} already exists...')
+        # Give read, write, execute permissions
         os.chmod(path, 0o777)
 
     def createDirs(self):
+        """
+        Creates directories for the dataset
+        """
         self.mkdir(self.root)
         self.mkdir(self.img)
         self.mkfile(self.idFile)
@@ -61,6 +78,9 @@ class DatasetCreator:
             f.write(str(self.size))
 
     def manualLoop(self):
+        """
+        Continuously takes pictures
+        """
         while True:
             imgId = input('Image label (id): ').strip()
 
@@ -70,6 +90,9 @@ class DatasetCreator:
             self.captureData(imgId)
 
     def hotkeyLoop(self):
+        """
+        Keeps taking pictures until the user presses the stop hotkey and saving them
+        """
         while True:
             imgId = input('Image label (id): ').strip()
 
@@ -78,6 +101,7 @@ class DatasetCreator:
             print(f'Starting at {str(self.size).zfill(FILENAME_WIDTH)}.png, taking images as fast as possible until {self.STOP_HOTKEY} is pressed...')
 
             while True:
+                # Stop key
                 if keyboard.is_pressed(self.STOP_HOTKEY):
                     print(f'Stopped at {str(self.size-1).zfill(FILENAME_WIDTH)}.png')
                     break
@@ -85,6 +109,6 @@ class DatasetCreator:
                 self.captureData(imgId)
 
 
-creator = DatasetCreator(WORKING_DIR, DATASET_NAME, FILENAME_WIDTH)
-
-creator.hotkeyLoop()
+if __name__ == "__main__":
+    creator = DatasetCreator(WORKING_DIR, DATASET_NAME, FILENAME_WIDTH)
+    # creator.hotkeyLoop()
