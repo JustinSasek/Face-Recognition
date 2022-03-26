@@ -6,11 +6,12 @@ import time
 WORKING_DIR = '.'
 DATASET_NAME = 'eclair-faces'
 FILENAME_WIDTH = 16
-WEBCAM_NUM = 0 # TODO: MAKE SURE THIS IS USING THE RIGHT WEBCAM!!!!!!!! Usually 0 is the default webcam on your computer and 1 any external webcam. 
+WEBCAM_NUM = 0  # TODO: MAKE SURE THIS IS USING THE RIGHT WEBCAM!!!!!!!! Usually 0 is the default webcam on your computer and 1 any external webcam.
 
 
 class DatasetCreator:
     STOP_HOTKEY = 'space'  # hotkey to stop recording
+    DEFAULT_DELAY = 0.5  # default delay for hotkeyloop
 
     def __init__(self, webcam_num=0, working_dir='.', dataset_name='eclair-faces', filename_width=16):
         self.root = os.path.join(WORKING_DIR, DATASET_NAME)
@@ -40,7 +41,7 @@ class DatasetCreator:
 
     def mkfile(self, path, init=None):
         """
-        Creates a file at a specfied path if it doesn't exist.
+        Creates a file at a specified path if it doesn't exist.
         
         Args:
             -
@@ -103,6 +104,14 @@ class DatasetCreator:
         """
         Keeps taking pictures until the user presses the stop hotkey and saving them
         """
+        delay_input = input(f'Delay between images taken (default {self.DEFAULT_DELAY}): ')
+        try:
+            hotkey_delay = float(delay_input)
+            if hotkey_delay < 0:
+                raise ValueError  # cannot have negative delay >:(
+        except ValueError:
+            hotkey_delay = self.DEFAULT_DELAY
+
         while True:
             imgId = input('Image label (id): ').strip()
 
@@ -117,7 +126,8 @@ class DatasetCreator:
                     break
                 # Capture webcam image
                 self.captureData(imgId)
-                time.sleep(0.5)
+                time.sleep(hotkey_delay)
+
 
 if __name__ == "__main__":
     creator = DatasetCreator(WEBCAM_NUM, WORKING_DIR, DATASET_NAME, FILENAME_WIDTH)
