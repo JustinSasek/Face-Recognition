@@ -13,14 +13,6 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
     model = model()
-    for param in model.parameters():
-        param.requires_grad = False
-    in_features = model.classifier[1].in_features  # hardcoded for efficientnetb0
-    model.classifier = nn.Sequential(
-        nn.Dropout(p=0.2, inplace=True),
-        nn.Linear(in_features=in_features, out_features=1, bias=True),
-        nn.Sigmoid()
-    )
 
     model.to(device)
     model.load_state_dict(torch.load(os.path.join(os.getcwd(), 'model.pt')))
