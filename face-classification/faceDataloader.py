@@ -70,14 +70,14 @@ def identify(identity):
     return np.float32(1) if identity == target_id else np.float32(0)
 
 
-def data():
+def data(batch_size = 256):
     # Transformations done on the dataset during pretraining on imagenet
     img_transform = T.Compose([T.Resize(256),
                             T.CenterCrop(224),
                             T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                             ])
 
-    root_dir = '/home/d0rb/PycharmProjects/ooooo/ObjectDetection/face-classification/eclair-faces/'
+    root_dir = './eclair-faces/'
     img_dir = os.path.join(root_dir, "img")
     id_file = os.path.join(root_dir, "id.txt")
     size_file = os.path.join(root_dir, "size.txt")

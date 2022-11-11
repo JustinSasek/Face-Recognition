@@ -11,7 +11,7 @@ WEBCAM_NUM = 0  # TODO: MAKE SURE THIS IS USING THE RIGHT WEBCAM!!!!!!!! Usually
 
 class DatasetCreator:
     STOP_HOTKEY = 'space'  # hotkey to stop recording
-    DEFAULT_DELAY = 0.5  # default delay for hotkeyloop
+    DEFAULT_DELAY = 0  # default delay for hotkeyloop
 
     def __init__(self, webcam_num=0, working_dir='.', dataset_name='eclair-faces', filename_width=16):
         self.root = os.path.join(WORKING_DIR, DATASET_NAME)
